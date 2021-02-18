@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://www.gstatic.com/firebasejs/ui/4.6.1/firebase-ui-auth__vi.js"></script>
+    <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/4.6.1/firebase-ui-auth.css" />
+</head>
+
+<body>
+    <div id="firebaseui-auth-container"></div>
+    <div id="loader">Loading...</div>
+    <!-- Insert these scripts at the bottom of the HTML, but before you use any Firebase services -->
+
+    <!-- Firebase App (the core Firebase SDK) is always required and must be listed first -->
+    <script src="https://www.gstatic.com/firebasejs/8.2.7/firebase-app.js"></script>
+
+    <!-- If you enabled Analytics in your project, add the Firebase SDK for Analytics -->
+    <script src="https://www.gstatic.com/firebasejs/8.2.7/firebase-analytics.js"></script>
+
+    <!-- Add Firebase products that you want to use -->
+    <script src="https://www.gstatic.com/firebasejs/8.2.7/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.7/firebase-firestore.js"></script>
+    <script>
+        // TODO: Replace the following with your app's Firebase project configuration
+        // For Firebase JavaScript SDK v7.20.0 and later, `measurementId` is an optional field
+        var firebaseConfig = {
+            apiKey: "AIzaSyAhNQ_d5GziKQLizM7FTjgyeuWnB0bQXzg",
+            authDomain: "authsms-95bc3.firebaseapp.com",
+            projectId: "authsms-95bc3",
+            storageBucket: "authsms-95bc3.appspot.com",
+            messagingSenderId: "294098022874",
+            appId: "1:294098022874:web:09c36975a9b0b433ec50e3",
+            measurementId: "G-9G5EE0362Y"
+        };
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        firebase.analytics();
+        var ui = new firebaseui.auth.AuthUI(firebase.auth());
+        var uiConfig = {
+            callbacks: {
+                signInSuccessWithAuthResult: function (authResult, redirectUrl) {
+                    var user = authResult.user;
+                    var credential = authResult.credential;
+                    var isNewUser = authResult.additionalUserInfo.isNewUser;
+                    var providerId = authResult.additionalUserInfo.providerId;
+                    var operationType = authResult.operationType;
+                    console.log(user);
+                    // Do something with the returned AuthResult.
+                    // Return type determines whether we continue the redirect
+                    // automatically or whether we leave that to developer to handle.
+                    return true;
+                },
+                signInFailure: function (error) {
+                    return handleUIError(error);
+                },
+                uiShown: function () {
+                    document.getElementById('loader').style.display = 'none';
+                }
+            },
+            signInFlow: 'redirect',//'popup'
+            // Leave the lines as is for the providers you want to offer your users.
+            signInSuccessUrl: '/',
+            signInOptions: [
+                {
+                    provider: firebase.auth.PhoneAuthProvider.PROVIDER_ID,
+                    recaptchaParameters: {
+                        type: 'image', // 'audio'
+                        size: 'normal', // 'invisible' or 'compact'
+                        badge: 'bottomleft' //' bottomright' or 'inline' applies to invisible.
+                    },
+                    defaultCountry: 'VN',
+                    whitelistedCountries: ['VN', '+84']
+                }
+            ],
+            immediateFederatedRedirect: false,
+            // Terms of service url/callback.
+            tosUrl: '<your-tos-url>',
+            // Privacy policy url/callback.
+            privacyPolicyUrl: function () {
+                window.location.assign('<your-privacy-policy-url>');
+            }
+        };
+        ui.start('#firebaseui-auth-container', uiConfig);
+    </script>
+</body>
+
+</html>
